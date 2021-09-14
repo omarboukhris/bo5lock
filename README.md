@@ -1,7 +1,7 @@
 # bo5lock
 A Basic extensible password wallet
 
-Dependencies
+## Dependencies
 
 To install the project dependencies with pip, you can use : 
 
@@ -12,7 +12,7 @@ pip3 install pyperclip
 
 Preferably in a virtual python environment.
 
-How to use :
+## How to use :
 
 Coming up...
 ```shell

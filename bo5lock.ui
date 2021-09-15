@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>bo5lock_widget</class>
+ <widget class="QWidget" name="bo5lock_widget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>220</width>
+    <height>365</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>bo5lock ui</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>bo5lock</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="6" column="0">
+       <widget class="QRadioButton" name="update_radioButton">
+        <property name="text">
+         <string>update</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QRadioButton" name="delete_radioButton">
+        <property name="text">
+         <string>delete</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QRadioButton" name="create_radioButton">
+        <property name="text">
+         <string>create</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="login_label">
+        <property name="text">
+         <string>Label</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QComboBox" name="service_comboBox">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="service_label">
+        <property name="text">
+         <string>Service</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QRadioButton" name="fetch_radioButton">
+        <property name="text">
+         <string>fetch</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QComboBox" name="label_comboBox">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="apply_pushButton">
+     <property name="text">
+      <string>apply</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="quit_pushButton">
+     <property name="text">
+      <string>quit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="status_label">
+     <property name="text">
+      <string>status</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>service_comboBox</tabstop>
+  <tabstop>label_comboBox</tabstop>
+  <tabstop>create_radioButton</tabstop>
+  <tabstop>fetch_radioButton</tabstop>
+  <tabstop>update_radioButton</tabstop>
+  <tabstop>delete_radioButton</tabstop>
+  <tabstop>apply_pushButton</tabstop>
+  <tabstop>quit_pushButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>quit_pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>bo5lock_widget</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>77</x>
+     <y>321</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>174</x>
+     <y>344</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>220</width>
-    <height>365</height>
+    <width>339</width>
+    <height>433</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,36 +20,29 @@
       <string>bo5lock</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="6" column="0">
-       <widget class="QRadioButton" name="update_radioButton">
-        <property name="text">
-         <string>update</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
-       <widget class="QRadioButton" name="delete_radioButton">
-        <property name="text">
-         <string>delete</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QRadioButton" name="create_radioButton">
-        <property name="text">
-         <string>create</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="login_label">
-        <property name="text">
-         <string>Label</string>
+      <item row="5" column="0">
+       <widget class="QLineEdit" name="kw_lineEdit">
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
        <widget class="QComboBox" name="service_comboBox">
+        <property name="editable">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Command</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QComboBox" name="label_comboBox">
         <property name="editable">
          <bool>true</bool>
         </property>
@@ -62,17 +55,46 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QRadioButton" name="fetch_radioButton">
+      <item row="7" column="0">
+       <widget class="QComboBox" name="cmd_comboBox">
+        <item>
+         <property name="text">
+          <string>create</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>fetch</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>update</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>delete</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>list</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="login_label">
         <property name="text">
-         <string>fetch</string>
+         <string>Label</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QComboBox" name="label_comboBox">
-        <property name="editable">
-         <bool>true</bool>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>kw</string>
         </property>
        </widget>
       </item>
@@ -100,15 +122,22 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="0">
+    <widget class="QTextEdit" name="status_textEdit">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>service_comboBox</tabstop>
   <tabstop>label_comboBox</tabstop>
-  <tabstop>create_radioButton</tabstop>
-  <tabstop>fetch_radioButton</tabstop>
-  <tabstop>update_radioButton</tabstop>
-  <tabstop>delete_radioButton</tabstop>
+  <tabstop>cmd_comboBox</tabstop>
   <tabstop>apply_pushButton</tabstop>
   <tabstop>quit_pushButton</tabstop>
  </tabstops>
@@ -121,12 +150,12 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>77</x>
-     <y>321</y>
+     <x>86</x>
+     <y>270</y>
     </hint>
     <hint type="destinationlabel">
      <x>174</x>
-     <y>344</y>
+     <y>302</y>
     </hint>
    </hints>
   </connection>

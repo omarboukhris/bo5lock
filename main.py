@@ -111,11 +111,13 @@ class Session:
 	def get_param(self, label: str, param: str, is_passwd: bool = False):
 		if self.p_engine.get(param):
 			return self.p_engine.get(param)
-		else:
+		elif not self.p_engine.get("-ui"):  # if not in ui mode, allow interaction
 			if is_passwd:
 				return getpass.getpass("(mypass_session) enter {} > ".format(label))
-			else :
+			else:
 				return input("(mypass_session) enter {} > ".format(label))
+		else:
+			raise Exception("No {} parameter specified with -ui".format(param))
 
 	def check_service_eq(self, a, c):
 		return self.engine.decode(a.service) == self.engine.decode(c.service)
@@ -125,7 +127,7 @@ class Session:
 
 	def create(self):
 		tik = self.get_param("ticket file path", "-p")
-		tik = "{}.tik".format(tik) if tik[:-4] != ".tik" else tik
+		tik = "{}.tik".format(tik) if tik[-4:] != ".tik" else tik
 		self.make_engine(tik)
 
 		enc_file = self.get_param("protected file path", "-f")
@@ -154,7 +156,7 @@ class Session:
 
 	def list_data(self):
 		tik = self.get_param("ticket file path", "-p")
-		tik = "{}.tik".format(tik) if tik[:-4] != ".tik" else tik
+		tik = "{}.tik".format(tik) if tik[-4:] != ".tik" else tik
 		self.make_engine(tik)
 
 		enc_file = self.get_param("protected file path", "-f")
@@ -176,7 +178,7 @@ class Session:
 
 	def fetch(self):
 		tik = self.get_param("ticket file path", "-p")
-		tik = "{}.tik".format(tik) if tik[:-4] != ".tik" else tik
+		tik = "{}.tik".format(tik) if tik[-4:] != ".tik" else tik
 		self.make_engine(tik)
 
 		enc_file = self.get_param("protected file path", "-f")
@@ -197,7 +199,7 @@ class Session:
 
 	def update(self):
 		tik = self.get_param("ticket file path", "-p")
-		tik = "{}.tik".format(tik) if tik[:-4] != ".tik" else tik
+		tik = "{}.tik".format(tik) if tik[-4:] != ".tik" else tik
 		self.make_engine(tik)
 
 		enc_file = self.get_param("protected file path", "-f")
@@ -226,7 +228,7 @@ class Session:
 
 	def delete(self):
 		tik = self.get_param("ticket file path", "-p")
-		tik = "{}.tik".format(tik) if tik[:-4] != ".tik" else tik
+		tik = "{}.tik".format(tik) if tik[-4:] != ".tik" else tik
 		self.make_engine(tik)
 
 		enc_file = self.get_param("protected file path", "-f")
@@ -295,20 +297,22 @@ and depending on command, user may be prompted to enter data in terminal
 
 if __name__ == "__main__":
 	# parse args
-	parser = ArgvLex(sys.argv[2:])  # argv[0] is main.py,
-	sess = Session(parser)
-	if len(sys.argv) > 1:
-		cmd = sys.argv[1]
-		if cmd == "create":
-			sess.create()
-		elif cmd == "fetch":
-			sess.fetch()
-		elif cmd == "update":
-			sess.update()
-		elif cmd == "delete":
-			sess.delete()
-		elif cmd == "list":
-			sess.list_data()
-	else:
-		print_help()
-
+	try:
+		parser = ArgvLex(sys.argv[2:])  # argv[0] is main.py,
+		sess = Session(parser)
+		if len(sys.argv) > 1:
+			cmd = sys.argv[1]
+			if cmd == "create":
+				sess.create()
+			elif cmd == "fetch":
+				sess.fetch()
+			elif cmd == "update":
+				sess.update()
+			elif cmd == "delete":
+				sess.delete()
+			elif cmd == "list":
+				sess.list_data()
+		else:
+			print_help()
+	except Exception as e:
+		print("An exception has occured : {}".format(e))

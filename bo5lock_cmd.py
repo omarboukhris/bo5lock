@@ -68,7 +68,7 @@ class IO:
 			return []
 
 	@staticmethod
-	def write_file(data: Service, enc_file: str):
+	def write_file(data: list, enc_file: str):
 		fstream = open(enc_file, "wb")
 		pickle.dump(data, fstream)
 		fstream.close()
@@ -103,10 +103,25 @@ class SecEngine:
 """
 class Session:
 
-	def __init__(self, p_engine: ArgvLex):
+	def __init__(self, p_engine: ArgvLex, fetch_callback=callable, log_out: callable = print):
 		self.p_engine = p_engine
 
+		self.fetch_callback = fetch_callback
+		self.log_out = log_out
+
 		self.engine = None
+
+	def run(self, cmd):
+		if cmd == "create":
+			self.create()
+		elif cmd == "fetch":
+			self.fetch()
+		elif cmd == "update":
+			self.update()
+		elif cmd == "delete":
+			self.delete()
+		elif cmd == "list":
+			self.list_data()
 
 	def get_param(self, label: str, param: str, is_passwd: bool = False):
 		if self.p_engine.get(param):
@@ -122,10 +137,19 @@ class Session:
 	def check_service_eq(self, a, c):
 		return self.engine.decode(a.service) == self.engine.decode(c.service)
 
-	def check_eq(self, a , c):
+	def check_eq(self, a, c):
 		return self.check_service_eq(a, c) and self.engine.decode(a.label) == self.engine.decode(c.label)
 
-	def create(self):
+	def get_input(self, cmd):
+		service, login, kw = None, None, None
+		if cmd in ["create", "fetch", "update", "delete"]:
+			service = self.engine.encode(self.get_param("service", "-s"))
+			login = self.engine.encode(self.get_param("login", "-l"))
+		if cmd in ["create", "update", "delete"]:
+			kw = self.engine.encode(self.get_param("keyword", "-k", True))
+		return service, login, kw
+
+	def get_input_files(self):
 		tik = self.get_param("ticket file path", "-p")
 		tik = "{}.tik".format(tik) if tik[-4:] != ".tik" else tik
 		self.make_engine(tik)
@@ -133,37 +157,33 @@ class Session:
 		enc_file = self.get_param("protected file path", "-f")
 		acc = IO.read_file(enc_file)
 
-		service = self.engine.encode(self.get_param("service", "-s"))
-		login = self.engine.encode(self.get_param("login", "-l"))
-		kw = self.engine.encode(self.get_param("keyword", "-k", True))
+		return tik, enc_file, acc
+
+	def create(self):
+		_, enc_file, acc = self.get_input_files()
+		service, login, kw = self.get_input("create")
 
 		c = Service(service, login, kw)
 		new_acc = []
 		found = False
 		for a in acc:
 			if self.check_eq(a, c) and not found:
-				print("(info) service/login found")
+				self.log_out("(info) service/login found")
 				found = True
 				new_acc.append(c)
 			else:
 				new_acc.append(a)
 		if not found :
-			print("(info) service/login not found, user created")
+			self.log_out("(info) service/login not found, user created")
 			new_acc.append(c)
 
 		IO.write_file(new_acc, enc_file)
-		print("(info) added info to database")
+		self.log_out("(info) added info to database")
 
 	def list_data(self):
-		tik = self.get_param("ticket file path", "-p")
-		tik = "{}.tik".format(tik) if tik[-4:] != ".tik" else tik
-		self.make_engine(tik)
-
-		enc_file = self.get_param("protected file path", "-f")
-		acc = IO.read_file(enc_file)
+		_, _, acc = self.get_input_files()
 
 		ord_dic = collections.OrderedDict()
-		print()
 		for a in acc:
 			kw = self.engine.decode(a.service)
 			if not (kw in ord_dic.keys()):
@@ -171,108 +191,85 @@ class Session:
 			else:
 				ord_dic[kw].append(self.engine.decode(a.label))
 		for k, l in ord_dic.items():
-			print(k)
+			self.log_out(k)
 			for el in l:
-				print("\t- {}".format(el))
-		print()
+				self.log_out("\t- {}".format(el))
 
 	def fetch(self):
-		tik = self.get_param("ticket file path", "-p")
-		tik = "{}.tik".format(tik) if tik[-4:] != ".tik" else tik
-		self.make_engine(tik)
-
-		enc_file = self.get_param("protected file path", "-f")
-		acc = IO.read_file(enc_file)
-
-		service = self.engine.encode(self.get_param("service", "-s"))
-		login = self.engine.encode(self.get_param("login", "-l"))
+		_, _, acc = self.get_input_files()
+		service, login, _ = self.get_input("fetch")
 
 		found = False
 		c = Service(service, login, self.engine.encode(""))
 		for a in acc:
 			if self.check_eq(a, c) and not found:
-				print("(info) user found, check clipboard")
-				pyperclip.copy(self.engine.decode(a.ticket))
+				self.log_out("(info) user found, check clipboard")
+				self.fetch_callback(self.engine.decode(a.ticket))
 				found = True
 		if not found:
-			print("(info) service/login not found, check credentials")
+			self.log_out("(info) service/login not found, check credentials")
 
 	def update(self):
-		tik = self.get_param("ticket file path", "-p")
-		tik = "{}.tik".format(tik) if tik[-4:] != ".tik" else tik
-		self.make_engine(tik)
-
-		enc_file = self.get_param("protected file path", "-f")
-		acc = IO.read_file(enc_file)
-
-		service = self.engine.encode(self.get_param("service", "-s"))
-		login = self.engine.encode(self.get_param("login", "-l"))
-
-		kw = self.engine.encode(self.get_param("keyword", "-k", True))
+		_, enc_file, acc = self.get_input_files()
+		service, login, kw = self.get_input("update")
 
 		c = Service(service, login, kw)
 		new_acc = []
 		found = False
 		for a in acc:
 			if self.check_eq(a, c) and not found:
-				print("(info) service/login found, user updating")
+				self.log_out("(info) service/login found, user updating")
 				found = True
 				new_acc.append(c)
 			else:
 				new_acc.append(a)
 		if not found:
-			print("(info) service/login not found, user not updated")
+			self.log_out("(info) service/login not found, user not updated")
 
 		IO.write_file(new_acc, enc_file)
-		print("(info) updated info to database")
+		self.log_out("(info) updated info to database")
 
 	def delete(self):
-		tik = self.get_param("ticket file path", "-p")
-		tik = "{}.tik".format(tik) if tik[-4:] != ".tik" else tik
-		self.make_engine(tik)
+		_, enc_file, acc = self.get_input_files()
+		service, login, kw = self.get_input("delete")
 
-		enc_file = self.get_param("protected file path", "-f")
-		acc = IO.read_file(enc_file)
-
-		service = self.engine.encode(self.get_param("service", "-s"))
-		login = self.engine.encode(self.get_param("login", "-l"))
-
-		c = Service(service, login, self.engine.encode(" "))
+		c = Service(service, login, kw)
 		new_acc = []
 		found = False
 
 		if self.engine.decode(login) == self.engine.decode(self.engine.encode("*")):
 			# delete all
 			for a in acc:
-				if self.check_service_eq(a, c):
-					print("(info) service/login found, deleting ...")
+				if self.check_service_eq(a, c) :
+					self.log_out("(info) service/login found, deleting ...")
 					found = True
 				else:
 					new_acc.append(a)
 			if not found:
-				print("(info) service/login not found, nothing to delete")
+				self.log_out("(info) service/login not found, nothing to delete")
 
 		else:
 			for a in acc:
-				if self.check_eq(a, c) and not found:
-					print("(info) service/login found")
+				if self.check_eq(a, c) and not found and \
+					self.engine.decode(a.ticket) == self.engine.decode(c.ticket):
+					self.log_out("(info) service/login found, deleting")
 					found = True
 				else:
 					new_acc.append(a)
 			if not found:
-				print("(info) service/login not found, nothing to delete")
+				self.log_out("(info) service/login not found or incorrect key, nothing to delete")
 
 		IO.write_file(new_acc, enc_file)
 
 	def make_engine(self, tik):
 		if os.path.isfile(tik):
-			print("(info) > ticket found")
+			self.log_out("(info) > ticket found")
 			self.engine = SecEngine(tik)
 		else:  # SecEngine generates new ticket, be sure to store it
-			print("(info) > ticket not found !")
+			self.log_out("(info) > ticket not found !")
 			self.engine = SecEngine()
 			IO.store_ticket(tik, self.engine.ticket)
-			print("(info) > generated new ticket, stored in {}".format(tik))
+			self.log_out("(info) > generated new ticket, stored in {}".format(tik))
 
 def print_help():
 	print("""
@@ -299,19 +296,9 @@ if __name__ == "__main__":
 	# parse args
 	try:
 		parser = ArgvLex(sys.argv[2:])  # argv[0] is main.py,
-		sess = Session(parser)
+		sess = Session(parser, fetch_callback=pyperclip.copy, log_out=print)
 		if len(sys.argv) > 1:
-			cmd = sys.argv[1]
-			if cmd == "create":
-				sess.create()
-			elif cmd == "fetch":
-				sess.fetch()
-			elif cmd == "update":
-				sess.update()
-			elif cmd == "delete":
-				sess.delete()
-			elif cmd == "list":
-				sess.list_data()
+			sess.run(sys.argv[1])
 		else:
 			print_help()
 	except Exception as e:

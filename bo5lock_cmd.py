@@ -1,6 +1,5 @@
 #!/home/omar/tf-lab/bin/python3
 
-import base64
 import getpass
 import sys
 import collections
@@ -10,7 +9,6 @@ import os.path
 
 import pickle
 import pyperclip
-import hashlib
 
 """ Class used for parsing arguments
 """
@@ -194,6 +192,7 @@ class Session:
 			self.log_out(k)
 			for el in l:
 				self.log_out("\t- {}".format(el))
+		return ord_dic
 
 	def fetch(self):
 		_, _, acc = self.get_input_files()

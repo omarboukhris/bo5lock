@@ -43,6 +43,7 @@ class Ui_bo5lock_widget(object):
         self.cmd_comboBox.addItem("")
         self.cmd_comboBox.addItem("")
         self.cmd_comboBox.addItem("")
+        self.cmd_comboBox.addItem("")
         self.gridLayout.addWidget(self.cmd_comboBox, 7, 0, 1, 1)
         self.login_label = QtWidgets.QLabel(self.groupBox)
         self.login_label.setObjectName("login_label")
@@ -70,9 +71,11 @@ class Ui_bo5lock_widget(object):
         self.quit_pushButton.clicked.connect(bo5lock_widget.close)
         QtCore.QMetaObject.connectSlotsByName(bo5lock_widget)
         bo5lock_widget.setTabOrder(self.service_comboBox, self.label_comboBox)
-        bo5lock_widget.setTabOrder(self.label_comboBox, self.cmd_comboBox)
+        bo5lock_widget.setTabOrder(self.label_comboBox, self.kw_lineEdit)
+        bo5lock_widget.setTabOrder(self.kw_lineEdit, self.cmd_comboBox)
         bo5lock_widget.setTabOrder(self.cmd_comboBox, self.apply_pushButton)
         bo5lock_widget.setTabOrder(self.apply_pushButton, self.quit_pushButton)
+        bo5lock_widget.setTabOrder(self.quit_pushButton, self.status_textEdit)
 
     def retranslateUi(self, bo5lock_widget):
         _translate = QtCore.QCoreApplication.translate
@@ -84,6 +87,7 @@ class Ui_bo5lock_widget(object):
         self.cmd_comboBox.setItemText(1, _translate("bo5lock_widget", "fetch"))
         self.cmd_comboBox.setItemText(2, _translate("bo5lock_widget", "update"))
         self.cmd_comboBox.setItemText(3, _translate("bo5lock_widget", "delete"))
+        self.cmd_comboBox.setItemText(4, _translate("bo5lock_widget", "list"))
         self.login_label.setText(_translate("bo5lock_widget", "Label"))
         self.label_2.setText(_translate("bo5lock_widget", "kw"))
         self.apply_pushButton.setText(_translate("bo5lock_widget", "apply"))

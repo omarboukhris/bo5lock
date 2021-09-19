@@ -137,9 +137,11 @@
  <tabstops>
   <tabstop>service_comboBox</tabstop>
   <tabstop>label_comboBox</tabstop>
+  <tabstop>kw_lineEdit</tabstop>
   <tabstop>cmd_comboBox</tabstop>
   <tabstop>apply_pushButton</tabstop>
   <tabstop>quit_pushButton</tabstop>
+  <tabstop>status_textEdit</tabstop>
  </tabstops>
  <resources/>
  <connections>

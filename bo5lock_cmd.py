@@ -8,7 +8,6 @@ from cryptography.fernet import Fernet
 import os.path
 
 import pickle
-import pyperclip
 
 """ Class used for parsing arguments
 """
@@ -294,6 +293,7 @@ and depending on command, user may be prompted to enter data in terminal
 if __name__ == "__main__":
 	# parse args
 	try:
+		import pyperclip
 		parser = ArgvLex(sys.argv[2:])  # argv[0] is main.py,
 		sess = Session(parser, fetch_callback=pyperclip.copy, log_out=print)
 		if len(sys.argv) > 1:

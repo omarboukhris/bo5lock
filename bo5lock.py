@@ -1,5 +1,7 @@
 import collections
 import sys
+from builtins import callable
+
 from bo5lock_cmd import ArgvLex, Session, Service, IO
 
 from PyQt6.QtWidgets import QApplication, QWidget, QFileDialog, QInputDialog, QLineEdit
@@ -18,14 +20,19 @@ class UiBo5lock(QWidget, Ui_bo5lock_widget):
 		self._tr = QCoreApplication.translate
 		self.loaded_wallet = collections.OrderedDict()
 
-		self.wallet = QFileDialog.getSaveFileName(
-			self, self._tr("ui_bo5lock", "Open Wallet"),
-			".", self._tr("ui_bo5lock", "Wallet file (*.wlt)"),
-			options=QFileDialog.Option.DontConfirmOverwrite)[0]
-		self.ticket = QFileDialog.getSaveFileName(
-			self, self._tr("ui_bo5lock", "Open Ticket"),
-			".", self._tr("ui_bo5lock", "Ticket file (*.tik)"),
-			options=QFileDialog.Option.DontConfirmOverwrite)[0]
+		self.wallet = ""
+		while self.wallet == "":
+			self.wallet = QFileDialog.getSaveFileName(
+				self, self._tr("ui_bo5lock", "Open Wallet"),
+				".", self._tr("ui_bo5lock", "Wallet file (*.wlt)"),
+				options=QFileDialog.Option.DontConfirmOverwrite)[0]
+
+		self.ticket = ""
+		while self.ticket == "":
+			self.ticket = QFileDialog.getSaveFileName(
+				self, self._tr("ui_bo5lock", "Open Ticket"),
+				".", self._tr("ui_bo5lock", "Ticket file (*.tik)"),
+				options=QFileDialog.Option.DontConfirmOverwrite)[0]
 
 		self.load_wlt()
 		self.update_service(0)
@@ -65,7 +72,10 @@ class UiBo5lock(QWidget, Ui_bo5lock_widget):
 		]
 		sys_out = []
 		parser = ArgvLex(argv)
-		sess = Session(parser, fetch_callback=QApplication.clipboard().setText, log_out=sys_out.append)
+		sess = Session(
+			parser,
+			fetch_callback=(lambda x: x),
+			log_out=sys_out.append)
 		self.loaded_wallet = sess.list_data()
 
 		self.service_comboBox.clear()
@@ -86,10 +96,9 @@ class UiBo5lock(QWidget, Ui_bo5lock_widget):
 				return
 
 		if cmd in ["create", "update", "delete"] and self.kw_lineEdit.text() == "":
-			self.status_textEdit.setText(self.tr("ui_bo5lock", "please enter passphrase"))
+			self.status_textEdit.setText(self._tr("ui_bo5lock", "please enter passphrase"))
 			return
 
-		# todo : make list cmd deprecated and list user/service in combobox
 		if cmd in ["create", "fetch", "update", "delete"]:
 			argv = [
 				"-f={}".format(self.wallet),

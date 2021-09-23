@@ -30,9 +30,9 @@ class ArgvLex:
 		return False
 
 	def dump(self):
-		print (self.parsedargv)
+		print(self.parsedargv)
 
-class Service :
+class Service:
 	def __init__(self, service, label, ticket):
 		self.service, self.label, self.ticket = service, label, ticket
 
@@ -100,7 +100,7 @@ class SecEngine:
 """
 class Session:
 
-	def __init__(self, p_engine: ArgvLex, fetch_callback=callable, log_out: callable = print):
+	def __init__(self, p_engine: ArgvLex, fetch_callback:callable, log_out: callable = print):
 		self.p_engine = p_engine
 
 		self.fetch_callback = fetch_callback

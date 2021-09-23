@@ -1,6 +1,5 @@
 import collections
 import sys
-from builtins import callable
 
 from bo5lock_cmd import ArgvLex, Session, Service, IO
 
@@ -55,6 +54,8 @@ class UiBo5lock(QWidget, Ui_bo5lock_widget):
 			self.kw_lineEdit.setDisabled(True)
 
 	def update_service(self, index):
+		if len(list(self.loaded_wallet.values())) == 0:
+			return  # break function, no element to display
 		value_at_index = list(self.loaded_wallet.values())[index]
 
 		self.label_comboBox.clear()

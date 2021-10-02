@@ -3,7 +3,7 @@ import sys
 
 from bo5lock_cmd import ArgvLex, Session, Service, IO
 
-from PyQt6.QtWidgets import QApplication, QWidget, QFileDialog, QInputDialog, QLineEdit
+from PyQt6.QtWidgets import QApplication, QWidget, QFileDialog
 from PyQt6.QtCore import QCoreApplication, QMetaObject
 
 from bo5lock_ui import Ui_bo5lock_widget
